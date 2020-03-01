@@ -2,11 +2,34 @@
 
 class Quote
 {
-    public $id;
-    public $siteId;
-    public $destinationId;
-    public $dateQuoted;
+    /**
+     * @var int
+     */
+    protected $id;
 
+    /**
+     * @var int
+     */
+    protected $siteId;
+
+    /**
+     * @var int
+     */
+    protected $destinationId;
+
+    /**
+     * @var string
+     */
+    protected $dateQuoted;
+
+    /**
+     * Quote constructor.
+     *
+     * @param int $id
+     * @param int $siteId
+     * @param int $destinationId
+     * @param string $dateQuoted
+     */
     public function __construct($id, $siteId, $destinationId, $dateQuoted)
     {
         $this->id = $id;
@@ -15,13 +38,55 @@ class Quote
         $this->dateQuoted = $dateQuoted;
     }
 
+    /**
+     * @param Quote $quote
+     *
+     * @return string
+     */
     public static function renderHtml(Quote $quote)
     {
-        return '<p>' . $quote->id . '</p>';
+        return '<p>' . $quote->getId() . '</p>';
     }
 
+    /**
+     * @param Quote $quote
+     *
+     * @return string
+     */
     public static function renderText(Quote $quote)
     {
-        return (string) $quote->id;
+        return (string) $quote->getId();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSiteId()
+    {
+        return $this->siteId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDestinationId()
+    {
+        return $this->destinationId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateQuoted()
+    {
+        return $this->dateQuoted;
     }
 }
