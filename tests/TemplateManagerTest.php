@@ -36,10 +36,11 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
     {
         $faker = \Faker\Factory::create();
 
-        $expectedDestination = DestinationRepository::getInstance()->getById($faker->randomNumber());
         $expectedUser = ApplicationContext::getInstance()->getCurrentUser();
 
         $quote = new Quote($faker->randomNumber(), $faker->randomNumber(), $faker->randomNumber(), $faker->date());
+        $expectedDestination = DestinationRepository::getInstance()->getById($quote->getDestinationId());
+        $expectedSite = SiteRepository::getInstance()->getById($quote->getSiteId());
 
         $template = new Template(
             1,
@@ -48,6 +49,8 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
 Bonjour [user:first_name],
 
 Merci d'avoir contacté un agent local pour votre voyage [quote:destination_name].
+
+Vous pouvez accéder à votre espace en accédant au lien suivant: [quote:destination_link]
 
 Bien cordialement,
 
@@ -68,6 +71,8 @@ www.evaneos.com
 Bonjour " . $expectedUser->getFirstname() . ",
 
 Merci d'avoir contacté un agent local pour votre voyage " . $expectedDestination->getCountryName() . ".
+
+Vous pouvez accéder à votre espace en accédant au lien suivant: ". $expectedSite->getUrl() . '/' . $expectedDestination->getCountryName() . '/quote/' . $quote->getId() ."
 
 Bien cordialement,
 

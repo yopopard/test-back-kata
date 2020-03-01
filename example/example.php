@@ -25,6 +25,8 @@ Bonjour [user:first_name],
 
 Merci d'avoir contacté un agent local pour votre voyage [quote:destination_name].
 
+Vous pouvez accéder à votre espace en accédant au lien suivant: [quote:destination_link]
+
 Bien cordialement,
 
 L'équipe Evaneos.com
