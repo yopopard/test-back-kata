@@ -12,6 +12,9 @@ require_once __DIR__ . '/../src/Repository/DestinationRepository.php';
 require_once __DIR__ . '/../src/Repository/QuoteRepository.php';
 require_once __DIR__ . '/../src/Repository/SiteRepository.php';
 require_once __DIR__ . '/../src/TemplateManager.php';
+require_once __DIR__ . '/../src/Entity/MappedQuote.php';
+require_once __DIR__ . '/../src/Mapper/MapperInterface.php';
+require_once __DIR__ . '/../src/Mapper/Quote/QuoteMapper.php';
 
 class TemplateManagerTest extends PHPUnit_Framework_TestCase
 {
@@ -39,8 +42,7 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
         $expectedUser = ApplicationContext::getInstance()->getCurrentUser();
 
         $quote = new Quote($faker->randomNumber(), $faker->randomNumber(), $faker->randomNumber(), $faker->date());
-        $expectedDestination = DestinationRepository::getInstance()->getById($quote->getDestinationId());
-        $expectedSite = SiteRepository::getInstance()->getById($quote->getSiteId());
+        $mappedQuote = QuoteMapper::getInstance()->map($quote);
 
         $template = new Template(
             1,
@@ -62,17 +64,19 @@ www.evaneos.com
         $message = $templateManager->getTemplateComputed(
             $template,
             [
-                'quote' => $quote
+                'quote' => $mappedQuote
             ]
         );
 
-        $this->assertEquals('Votre voyage avec une agence locale ' . $expectedDestination->getCountryName(), $message->getSubject());
+        $this->assertEquals('Votre voyage avec une agence locale ' .
+            $mappedQuote->getDestination()->getCountryName(), $message->getSubject());
         $this->assertEquals("
 Bonjour " . $expectedUser->getFirstname() . ",
 
-Merci d'avoir contacté un agent local pour votre voyage " . $expectedDestination->getCountryName() . ".
+Merci d'avoir contacté un agent local pour votre voyage " . $mappedQuote->getDestination()->getCountryName() . ".
 
-Vous pouvez accéder à votre espace en accédant au lien suivant: ". $expectedSite->getUrl() . '/' . $expectedDestination->getCountryName() . '/quote/' . $quote->getId() ."
+Vous pouvez accéder à votre espace en accédant au lien suivant: ". $mappedQuote->getSite()->getUrl() . '/' .
+            $mappedQuote->getDestination()->getCountryName() . '/quote/' . $mappedQuote->getId() ."
 
 Bien cordialement,
 

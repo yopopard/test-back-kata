@@ -19,17 +19,17 @@ class TemplateManager
     {
         $APPLICATION_CONTEXT = ApplicationContext::getInstance();
 
-        /** @var Quote|null $quote */
-        $quote = (isset($data['quote']) and $data['quote'] instanceof Quote) ? $data['quote'] : null;
+        /** @var MappedQuote|null $quote */
+        $quote = (isset($data['quote']) and $data['quote'] instanceof MappedQuote) ? $data['quote'] : null;
 
         if ($quote)
         {
-            $_quoteFromRepository = QuoteRepository::getInstance()->getById($quote->getId());
-            $usefulObject = SiteRepository::getInstance()->getById($quote->getSiteId());
-            $destinationOfQuote = DestinationRepository::getInstance()->getById($quote->getDestinationId());
+            $_quoteFromRepository = $quote;
+            $usefulObject = $quote->getSite();
+            $destinationOfQuote = $quote->getDestination();
 
             if(strpos($text, '[quote:destination_link]') !== false){
-                $destination = DestinationRepository::getInstance()->getById($quote->getDestinationId());
+                $destination = $quote->getDestination();
             }
 
             $containsSummaryHtml = strpos($text, '[quote:summary_html]');
