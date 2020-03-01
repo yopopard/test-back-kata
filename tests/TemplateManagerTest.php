@@ -15,6 +15,9 @@ require_once __DIR__ . '/../src/TemplateManager.php';
 require_once __DIR__ . '/../src/Entity/MappedQuote.php';
 require_once __DIR__ . '/../src/Mapper/MapperInterface.php';
 require_once __DIR__ . '/../src/Mapper/Quote/QuoteMapper.php';
+require_once __DIR__ . '/../src/Deliver/DelivererInterface.php';
+require_once __DIR__ . '/../src/Deliver/MappedQuote/MappedQuoteDeliverer.php';
+require_once __DIR__ . '/../src/ViewModel/Quote/QuoteViewModel.php';
 
 class TemplateManagerTest extends PHPUnit_Framework_TestCase
 {
@@ -43,6 +46,7 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
 
         $quote = new Quote($faker->randomNumber(), $faker->randomNumber(), $faker->randomNumber(), $faker->date());
         $mappedQuote = QuoteMapper::getInstance()->map($quote);
+        $quoteVM = MappedQuoteDeliverer::getInstance()->deliver($mappedQuote);
 
         $template = new Template(
             1,
@@ -64,7 +68,7 @@ www.evaneos.com
         $message = $templateManager->getTemplateComputed(
             $template,
             [
-                'quote' => $mappedQuote
+                'quote' => $quoteVM
             ]
         );
 

@@ -19,19 +19,11 @@ class TemplateManager
     {
         $APPLICATION_CONTEXT = ApplicationContext::getInstance();
 
-        /** @var MappedQuote|null $quote */
-        $quote = (isset($data['quote']) and $data['quote'] instanceof MappedQuote) ? $data['quote'] : null;
+        /** @var QuoteViewModel|null $quote */
+        $quote = (isset($data['quote']) and $data['quote'] instanceof QuoteViewModel) ? $data['quote'] : null;
 
         if ($quote)
         {
-            $_quoteFromRepository = $quote;
-            $usefulObject = $quote->getSite();
-            $destinationOfQuote = $quote->getDestination();
-
-            if(strpos($text, '[quote:destination_link]') !== false){
-                $destination = $quote->getDestination();
-            }
-
             $containsSummaryHtml = strpos($text, '[quote:summary_html]');
             $containsSummary     = strpos($text, '[quote:summary]');
 
@@ -39,24 +31,25 @@ class TemplateManager
                 if ($containsSummaryHtml !== false) {
                     $text = str_replace(
                         '[quote:summary_html]',
-                        Quote::renderHtml($_quoteFromRepository),
+                        $quote->summaryHtml,
                         $text
                     );
                 }
                 if ($containsSummary !== false) {
                     $text = str_replace(
                         '[quote:summary]',
-                        Quote::renderText($_quoteFromRepository),
+                        $quote->summary,
                         $text
                     );
                 }
             }
 
-            (strpos($text, '[quote:destination_name]') !== false) and $text = str_replace('[quote:destination_name]',$destinationOfQuote->getCountryName(),$text);
+            (strpos($text, '[quote:destination_name]') !== false) and
+            $text = str_replace('[quote:destination_name]', $quote->destinationName,$text);
         }
 
-        if (isset($destination))
-            $text = str_replace('[quote:destination_link]', $usefulObject->getUrl() . '/' . $destination->getCountryName() . '/quote/' . $_quoteFromRepository->getId(), $text);
+        if (strpos($text, '[quote:destination_link]') !== false)
+            $text = str_replace('[quote:destination_link]', $quote->destinationLink, $text);
         else
             $text = str_replace('[quote:destination_link]', '', $text);
 

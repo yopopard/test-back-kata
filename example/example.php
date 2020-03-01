@@ -17,6 +17,9 @@ require_once __DIR__ . '/../src/TemplateManager.php';
 require_once __DIR__ . '/../src/Mapper/MapperInterface.php';
 require_once __DIR__ . '/../src/Mapper/Quote/QuoteMapper.php';
 require_once __DIR__ . '/../src/Entity/MappedQuote.php';
+require_once __DIR__ . '/../src/Deliver/DelivererInterface.php';
+require_once __DIR__ . '/../src/Deliver/MappedQuote/MappedQuoteDeliverer.php';
+require_once __DIR__ . '/../src/ViewModel/Quote/QuoteViewModel.php';
 
 $faker = \Faker\Factory::create();
 
@@ -39,18 +42,18 @@ www.evaneos.com
 $quote = new Quote($faker->randomNumber(), $faker->randomNumber(), $faker->randomNumber(), $faker->date());
 try {
     $mappedQuote = QuoteMapper::getInstance()->map($quote);
+    $quoteVM = MappedQuoteDeliverer::getInstance()->deliver($mappedQuote);
 } catch (Exception $e) {
     //todo log
     echo 'Error: ' . $e->getMessage();
 }
-
 
 $templateManager = new TemplateManager();
 
 $message = $templateManager->getTemplateComputed(
     $template,
     [
-        'quote' => $mappedQuote
+        'quote' => $quoteVM
     ]
 );
 

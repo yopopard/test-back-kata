@@ -23,7 +23,7 @@ class Quote
     protected $dateQuoted;
 
     /**
-     * Quote constructor.
+     * MappedQuote constructor.
      *
      * @param int $id
      * @param int $siteId

@@ -36,7 +36,7 @@ class QuoteMapper implements MapperInterface
     public function map($object)
     {
         if (!$object instanceof Quote) {
-            throw new Exception('Wrong type: expected Quote');
+            throw new Exception('Wrong type: expected MappedQuote');
         }
 
         return new MappedQuote(
