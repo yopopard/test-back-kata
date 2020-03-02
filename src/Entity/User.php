@@ -13,12 +13,12 @@ class User
     /**
      * @var string
      */
-    protected $firstname;
+    protected $firstName;
 
     /**
      * @var string
      */
-    protected $lastname;
+    protected $lastName;
 
     /**
      * @var string
@@ -29,15 +29,15 @@ class User
      * User constructor.
      *
      * @param int $id
-     * @param string $firstname
-     * @param string $lastname
+     * @param string $firstName
+     * @param string $lastName
      * @param string $email
      */
-    public function __construct($id, $firstname, $lastname, $email)
+    public function __construct($id, $firstName, $lastName, $email)
     {
         $this->id = $id;
-        $this->firstname = $firstname;
-        $this->lastname = $lastname;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
         $this->email = $email;
     }
 
@@ -52,17 +52,17 @@ class User
     /**
      * @return string
      */
-    public function getFirstname()
+    public function getFirstName()
     {
-        return $this->firstname;
+        return $this->firstName;
     }
 
     /**
      * @return string
      */
-    public function getLastname()
+    public function getLastName()
     {
-        return $this->lastname;
+        return $this->lastName;
     }
 
     /**
