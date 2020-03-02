@@ -31,8 +31,9 @@ class TemplateManager
         return preg_replace_callback('/\[(.*?)\]/',function ($matches) use ($data) {
             /* extract x and y from expression [x:y] */
             $arr = explode(':', substr($matches[0], 1, -1));
-            if (count($arr) === 2 && isset($data[$arr[0]])) {
-                return $this->computeProperty($data[$arr[0]], $arr[1]);
+            if (count($arr) === 2 && isset($data[$arr[0]]) &&
+                null !== ($res = $this->computeProperty($data[$arr[0]], $arr[1]))) {
+                return $res;
             }
             /* We can add more cases here */
             return $matches[0];
