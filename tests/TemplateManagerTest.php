@@ -68,7 +68,8 @@ www.evaneos.com
         $message = $templateManager->getTemplateComputed(
             $template,
             [
-                'quote' => $quoteVM
+                'quote' => $quoteVM,
+                'user' => ApplicationContext::getInstance()->getCurrentUser()
             ]
         );
 

@@ -17,17 +17,6 @@ class TemplateManager
 
     private function computeText($text, array $data)
     {
-        // todo move
-        $APPLICATION_CONTEXT = ApplicationContext::getInstance();
-
-        /*
-         * USER
-         * [user:*]
-         */
-        $_user  = (isset($data['user'])  and ($data['user']  instanceof User))  ? $data['user']  : $APPLICATION_CONTEXT->getCurrentUser();
-        if ($_user)
-            $data['user'] = $_user;
-
         return preg_replace_callback('/\[(.*?)\]/',function ($matches) use ($data) {
             /* extract x and y from expression [x:y] */
             $arr = explode(':', substr($matches[0], 1, -1));
