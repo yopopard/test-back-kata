@@ -17,51 +17,45 @@ class TemplateManager
 
     private function computeText($text, array $data)
     {
+        // todo move
         $APPLICATION_CONTEXT = ApplicationContext::getInstance();
-
-        /** @var QuoteViewModel|null $quote */
-        $quote = (isset($data['quote']) and $data['quote'] instanceof QuoteViewModel) ? $data['quote'] : null;
-
-        if ($quote)
-        {
-            $containsSummaryHtml = strpos($text, '[quote:summary_html]');
-            $containsSummary     = strpos($text, '[quote:summary]');
-
-            if ($containsSummaryHtml !== false || $containsSummary !== false) {
-                if ($containsSummaryHtml !== false) {
-                    $text = str_replace(
-                        '[quote:summary_html]',
-                        $quote->summaryHtml,
-                        $text
-                    );
-                }
-                if ($containsSummary !== false) {
-                    $text = str_replace(
-                        '[quote:summary]',
-                        $quote->summary,
-                        $text
-                    );
-                }
-            }
-
-            (strpos($text, '[quote:destination_name]') !== false) and
-            $text = str_replace('[quote:destination_name]', $quote->destinationName,$text);
-        }
-
-        if (strpos($text, '[quote:destination_link]') !== false)
-            $text = str_replace('[quote:destination_link]', $quote->destinationLink, $text);
-        else
-            $text = str_replace('[quote:destination_link]', '', $text);
 
         /*
          * USER
          * [user:*]
          */
         $_user  = (isset($data['user'])  and ($data['user']  instanceof User))  ? $data['user']  : $APPLICATION_CONTEXT->getCurrentUser();
-        if($_user) {
-            (strpos($text, '[user:first_name]') !== false) and $text = str_replace('[user:first_name]'       , ucfirst(mb_strtolower($_user->getFirstname())), $text);
-        }
+        if ($_user)
+            $data['user'] = $_user;
 
-        return $text;
+        return preg_replace_callback('/\[(.*?)\]/',function ($matches) use ($data) {
+            /* extract x and y from expression [x:y] */
+            $arr = explode(':', substr($matches[0], 1, -1));
+            if (count($arr) === 2 && isset($data[$arr[0]])) {
+                return $this->computeProperty($data[$arr[0]], $arr[1]);
+            }
+            /* We can add more cases here */
+            return $matches[0];
+        }, $text);
+    }
+
+    /**
+     * @param $text
+     *
+     * @return mixed
+     */
+    private function computeProperty($object, $property) {
+        $pascalProperty = str_replace("_", "", ucwords($property, " /_"));
+        $camelProperty = lcfirst($pascalProperty);
+        $propertyAccessor = 'get' . $pascalProperty;
+
+        if (isset($object->$property)) {
+            return $object->$property;
+        } elseif (isset($object->$camelProperty)) {
+            return $object->$camelProperty;
+        } elseif (method_exists($object, $propertyAccessor)) {
+            return $object->$propertyAccessor();
+        }
+        return null;
     }
 }
