@@ -22,9 +22,29 @@ class MappedQuoteDeliverer implements DelivererInterface
         $quote->destinationLink = $object->getSite()->getUrl() . '/' . $object->getDestination()->getCountryName() .
             '/quote/' . $object->getId();
         $quote->destinationName = $object->getDestination()->getCountryName();
-        $quote->summary = Quote::renderText($object);
-        $quote->summaryHtml = Quote::renderHtml($object);
+        $quote->summary = self::renderText($object);
+        $quote->summaryHtml = self::renderHtml($object);
 
         return $quote;
+    }
+
+    /**
+     * @param Quote $quote
+     *
+     * @return string
+     */
+    public static function renderHtml(Quote $quote)
+    {
+        return '<p>' . $quote->getId() . '</p>';
+    }
+
+    /**
+     * @param Quote $quote
+     *
+     * @return string
+     */
+    public static function renderText(Quote $quote)
+    {
+        return (string) $quote->getId();
     }
 }
